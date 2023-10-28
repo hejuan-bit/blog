@@ -10,19 +10,14 @@ const Navbar = () => {
     const {pathname} = useRouter();
     const [isShowLogin, setIsShowLogin] = useState(false)
     const handleGotoEditorPage = () => {
-        console.log('5555')
     }
     const handleLogin = () => {
-        console.log('333')
         setIsShowLogin(true)
     }
     const handleClose = () => {
         setIsShowLogin(false)
     }
 
-    const aa = () => {
-        console.log(555)
-    }
     return (
         <div className={style.navbar}>
             <section className={style.logArea}>BLOG-C</section>
@@ -46,7 +41,7 @@ const Navbar = () => {
             </section>
             <section className={style.operationArea}>
                 <Button onClick={handleGotoEditorPage}>写文章</Button>
-                <Button type='primary' onclick={handleLogin}>登录</Button>
+                <Button type='primary' onClick={handleLogin}>登录</Button>
             </section>
             <Login isShow={isShowLogin} onClose={handleClose}/>
         </div>
