@@ -31,9 +31,16 @@ const Login = (props: Iprops) => {
             message.warning('请输入手机号');
             return;
         }
-        request.post('/api/user/senVerifyCode');
-
-        // setIsShowVerifyCode(true)
+        request.post('/api/user/sendVerifyCode',{
+            to: form?.phone,
+            templateId: 1
+        }).then((res: any) => {
+            if(res?.code === 0){
+                setIsShowVerifyCode(true)
+            } else {
+                message.error(res?.msg || '未知错误')
+            }
+        });
     }
 
     const handleLogin = () => {
