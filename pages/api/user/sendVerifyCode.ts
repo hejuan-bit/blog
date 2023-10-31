@@ -4,11 +4,13 @@ import {encode} from 'js-base64';
 import { NextApiRequest, NextApiResponse } from "next";
 import request from '../../../service/fetch';
 import {withIronSessionApiRoute} from 'iron-session/next';
+import {ironOption} from '../../../config/index';
+import {ISession } from '../index';
 
-export default withIronSessionApiRoute(sendVerifyCode,{
+export default withIronSessionApiRoute(sendVerifyCode,ironOption);
 
-})
 async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
+    const session: ISession = req.session;
     const {to='', templateId ='1'} = req.body;
     const AccountId = '2c94811c8b1e335b018b76e90a2b156b';
     const AuthToken = 'e98c9ed303a54644a6a0a28533ef564d';
@@ -20,7 +22,7 @@ async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
     const verifyCode = Math.floor(Math.random() * (9999-1000)) + 1000;
     const expireTime = 5;
 
-    const reponse = await request.post(url,{
+    const response = await request.post(url,{
         to,
         templateId,
         appId: AppId,
@@ -30,4 +32,21 @@ async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
             Authorization: Authorization,
         }
     });
+    const {statusCode, statusMsg, TemplateSMS} = response as any;
+    if(statusCode === '000000'){
+        session.verifyCode = verifyCode;
+        await session.save();
+        res.status(200).json({
+            code: 0,
+            msg: statusMsg,
+            data: {
+                TemplateSMS  
+            }
+        })
+    } else {
+        res.status(200).json({
+            code: statusCode,
+            msg: statusMsg
+        })
+    }
 }

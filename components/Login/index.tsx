@@ -44,7 +44,15 @@ const Login = (props: Iprops) => {
     }
 
     const handleLogin = () => {
-
+        request.post('/api/user/login',{
+            ...form,
+        }).then((res: any) => {
+            if(res?.code === 0){
+                onClose()
+            } else{
+                message.error(res?.msg || '未知错误')
+            }
+        })
     }
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
