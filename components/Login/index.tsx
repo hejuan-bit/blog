@@ -46,9 +46,11 @@ const Login = (props: Iprops) => {
     const handleLogin = () => {
         request.post('/api/user/login',{
             ...form,
+            identity_type: "phone"
         }).then((res: any) => {
             if(res?.code === 0){
                 onClose()
+                message.success('登录成功')
             } else{
                 message.error(res?.msg || '未知错误')
             }
