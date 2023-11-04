@@ -28,6 +28,21 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
         if(userAuth){
             //已存在的用户
             console.log('555')
+            const user = userAuth.user;
+            const {id, nickname, avatar} = user;
+            session.userId = id;
+            session.nickname = nickname;
+            session.avatar = avatar;
+            await session.save()
+            res.status(200).json({
+                msg: '登录成功',
+                data: {
+                    userId: id,
+                    nickname,
+                    avatar,
+                },
+                code: 0
+            })
         } else {
             console.log('666')
             //新用户，自动注册
@@ -44,15 +59,32 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             userAuths.user = user
     
             const resUserAuth = await userAuthRepo.save(userAuths);
+            const {
+                user: {id, nickname, avatar}
+            } = resUserAuth;
+
+            session.userId = id;
+            session.nickname = nickname;
+            session.avatar = avatar;
+
+            await session.save()
             console.log(resUserAuth,'666')
+            res.status(200).json({
+                msg: '登录成功',
+                data: {
+                    userId: id,
+                    nickname,
+                    avatar,
+                },
+                code: 0
+            })
     
         }
+    }else {
+        res.status(200).json({
+            msg: '验证码错误',
+            code: -1,
+        })
     }
-   
-    res.status(200).json({
-        phone,
-        verify,
-        code: 0
-    })
 }
 

@@ -50,7 +50,6 @@ const Login = (props: Iprops) => {
         }).then((res: any) => {
             if(res?.code === 0){
                 onClose()
-                message.success('登录成功')
             } else{
                 message.error(res?.msg || '未知错误')
             }
