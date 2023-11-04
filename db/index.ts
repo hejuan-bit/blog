@@ -1,33 +1,35 @@
 import "reflect-metadata";
 import {Connection, getConnection, createConnection } from 'typeorm';
+import {User, UserAuth} from './entity/index'
 
-let ConnectionReadyPromise: Promise<Connection> | null = null;
+let connectionReadyPromise: Promise<Connection> | null = null;
 
 
 export const prepareConnection = () => {
-    if(!ConnectionReadyPromise){
-        ConnectionReadyPromise = (async () => {
-            try{
-                const stlaConnection = getConnection();
-                await stlaConnection.close();
-            } catch (error) {
-                console.log(error)
-            }
+    // if(!connectionReadyPromise){
+        connectionReadyPromise = (async () => {
+            // try{
+            //     const stlaConnection = getConnection();
+            //     await stlaConnection.close();
+            // } catch (error) {
+            //     console.log(error)
+            // }
             const connectioon = await createConnection({
                 type: 'mysql',
                 host: process.env.DATABASE_HOST,
                 port: Number(process.env.DATABASE_PORT),
                 username: process.env.DATABASE_USERNAME,
                 password: process.env.DATABASE_PASSWORD,
-                database: process.env.DATABASE_DATABASE,
-                entities: {},
+                database: process.env.DATABASE_NAME,
+                entities: [User],
                 synchronize: false,
                 logging: true
             })
-            return connectioon
+           
+            return connectioon;
         }
 
         )()
-    }
-    return ConnectionReadyPromise
+    // }
+    return connectionReadyPromise
 }
