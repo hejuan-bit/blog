@@ -3,7 +3,8 @@ import style from './index.module.scss';
 import {useState} from "react";
 import CountDown from '../CountDown';
 import {message} from 'antd';
-import request from '../../service/fetch'
+import request from '../../service/fetch';
+import {useStore} from '../../store/index'
 
 interface Iprops {
     isShow: boolean;
@@ -11,6 +12,7 @@ interface Iprops {
 }
 
 const Login = (props: Iprops) => {
+    const store = useStore();
     const {
         isShow,
         onClose 
@@ -49,7 +51,10 @@ const Login = (props: Iprops) => {
             identity_type: "phone"
         }).then((res: any) => {
             if(res?.code === 0){
-                onClose()
+                store.user.setUserInfo(res.data);
+                console.log(store,'store')
+                onClose();
+                message.success(res?.msg)
             } else{
                 message.error(res?.msg || '未知错误')
             }
