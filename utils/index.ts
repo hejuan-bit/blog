@@ -24,3 +24,23 @@ export const setCookie = (
         expire
     });
 }
+
+export const clearCookie = (
+    cookies: any, 
+) => {
+    const expire = new Date(Date.now() + 24* 60* 60*1000);
+    const path = '/';
+
+    cookies.set("userId", '', {
+        path,
+        expire
+    });
+    cookies.set("nickname", '', {
+        path,
+        expire
+    });
+    cookies.set("avatar", '', {
+        path,
+        expire
+    });
+}

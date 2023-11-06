@@ -4,7 +4,9 @@ import {useState} from "react";
 import CountDown from '../CountDown';
 import {message} from 'antd';
 import request from '../../service/fetch';
-import {useStore} from '../../store/index'
+import {useStore} from '../../store/index';
+import {observer} from 'mobx-react-lite'
+
 
 interface Iprops {
     isShow: boolean;
@@ -104,4 +106,4 @@ const Login = (props: Iprops) => {
     )
 }
 
-export default Login;
+export default observer(Login);

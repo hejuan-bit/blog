@@ -9,7 +9,7 @@ interface IProps {
     children: ReactElement
 }
 
-enableStaticRendering(true)
+enableStaticRendering(!process.browser)
 
 export const StoreProvider = ({initialValue, children}: IProps ) => {
     const store: Istore = useLocalObservable(createStore(initialValue))

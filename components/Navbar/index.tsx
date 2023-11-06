@@ -7,6 +7,8 @@ import {Button, Avatar, Dropdown, Menu} from 'antd';
 import Login from '../Login'
 import {useStore} from '../../store/index';
 import { LoginOutlined, HomeOutlined } from "@ant-design/icons";
+import request from '../../service/fetch';
+import {observer} from 'mobx-react-lite'
 
 
 const Navbar = () => {
@@ -23,11 +25,23 @@ const Navbar = () => {
         setIsShowLogin(false)
     }
 
+    const handleLoginOut = () => {
+        request.post('/api/user/logout').then((res: any) => {
+            if(res.code === 0) {
+                store.user.setUserInfo({})
+            }
+        })
+    }
+
+    const handleGotoPersonalPage = () => {
+
+    }
+
     const renderDropMenu = () => {
         return (
             <Menu>
-                <Menu.Item><HomeOutlined />&nbsp;个人主页</Menu.Item>
-                <Menu.Item><LoginOutlined />&nbsp;退出</Menu.Item>
+                <Menu.Item onClick={handleGotoPersonalPage}><HomeOutlined />&nbsp;个人主页</Menu.Item>
+                <Menu.Item onClick={handleLoginOut}><LoginOutlined />&nbsp;退出</Menu.Item>
             </Menu>
         )
     }
@@ -72,4 +86,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar;
+export default observer(Navbar);
