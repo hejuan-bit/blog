@@ -3,7 +3,7 @@ import { navs } from "./config";
 import Link from 'next/link';
 import {useRouter} from 'next/router'
 import style  from "./index.module.scss";
-import {Button, Avatar, Dropdown, Menu} from 'antd';
+import {Button, Avatar, Dropdown, Menu, message} from 'antd';
 import Login from '../Login'
 import {useStore} from '../../store/index';
 import { LoginOutlined, HomeOutlined } from "@ant-design/icons";
@@ -14,9 +14,15 @@ import {observer} from 'mobx-react-lite'
 const Navbar = () => {
     const store = useStore();
     const {userId, avatar} = store.user.userInfo;
-    const {pathname} = useRouter();
+    const {pathname, push} = useRouter();
     const [isShowLogin, setIsShowLogin] = useState(false)
+
     const handleGotoEditorPage = () => {
+        if(userId){
+            push('/editor/new')
+        } else {
+            message.warning('请先登录')
+        }
     }
     const handleLogin = () => {
         setIsShowLogin(true)
@@ -34,7 +40,7 @@ const Navbar = () => {
     }
 
     const handleGotoPersonalPage = () => {
-
+       push(`/user/${userId}`);
     }
 
     const renderDropMenu = () => {
