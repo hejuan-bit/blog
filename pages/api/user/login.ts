@@ -4,10 +4,13 @@ import {ironOption} from '../../../config/index';
 import {prepareConnection} from '../../../db/index'
 import {User, UserAuth} from '../../../db/entity/index'
 import {ISession } from '../index'
+import {Cookie} from "next-cookie"
+import {setCookie} from '../../../utils/index'
 
 export default withIronSessionApiRoute(login,ironOption);
 
 async function login(req: NextApiRequest, res: NextApiResponse) {
+    const cookies = Cookie.fromApiRoute(req, res);
     const session: ISession = req.session;
     const {phone ='', verify = '', identity_type="phone"} = req.body;
     //连接数据库
@@ -27,10 +30,13 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             //已存在的用户
             const user = userAuth.user;
             const {id, nickname, avatar} = user;
+            //设置session
             session.userId = id;
             session.nickname = nickname;
             session.avatar = avatar;
             await session.save()
+            //设置cookie
+            setCookie(cookies, { id, nickname, avatar })
             res.status(200).json({
                 msg: '登录成功',
                 data: {
@@ -58,12 +64,13 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             const {
                 user: {id, nickname, avatar}
             } = resUserAuth;
-
+            //保存在session
             session.userId = id;
             session.nickname = nickname;
             session.avatar = avatar;
-
             await session.save()
+            //保存在cookie
+            setCookie(cookies, { id, nickname, avatar })
             res.status(200).json({
                 msg: '登录成功',
                 data: {

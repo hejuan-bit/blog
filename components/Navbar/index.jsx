@@ -6,6 +6,7 @@ import style  from "./index.module.scss";
 import {Button, Avatar, Dropdown, Menu} from 'antd';
 import Login from '../Login'
 import {useStore} from '../../store/index';
+import { LoginOutlined, HomeOutlined } from "@ant-design/icons";
 
 
 const Navbar = () => {
@@ -25,8 +26,8 @@ const Navbar = () => {
     const renderDropMenu = () => {
         return (
             <Menu>
-                <Menu.Item>个人主页</Menu.Item>
-                <Menu.Item>退出</Menu.Item>
+                <Menu.Item><HomeOutlined />&nbsp;个人主页</Menu.Item>
+                <Menu.Item><LoginOutlined />&nbsp;退出</Menu.Item>
             </Menu>
         )
     }
@@ -56,7 +57,7 @@ const Navbar = () => {
                 <Button onClick={handleGotoEditorPage}>写文章</Button>
                 { userId ? (
                         <>
-                            <Dropdown overlay={renderDropMenu()} placement="bottomleft">
+                            <Dropdown overlay={renderDropMenu()} placement="bottomLeft">
                                 <Avatar src={avatar} size={32}></Avatar>
                             </Dropdown>
                         </>
