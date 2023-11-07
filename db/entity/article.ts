@@ -22,7 +22,7 @@ export class Article extends BaseEntity {
     update_time!: Date;
 
     @Column()
-    is_delete!: Date;
+    is_delete!: number;
 
     @ManyToOne(()  => User, {
         cascade: true
