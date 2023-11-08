@@ -2,6 +2,8 @@ import React  from "react";
 import {prepareConnection} from '../db/index';
 import { Article } from "../db/entity/index";
 import ListItem from "../components/ListItem";
+import {Divider} from 'antd'
+
 
 interface IArticle {
 
@@ -27,13 +29,18 @@ function HomePage(props: IProps) {
   const {articles} = props;
   console.log(articles,'articles')
   return (
-    <div>
-      {
-        articles?.map(article => (
-          <ListItem article={article} />
-        ))
-      }
-  </div>
+    <div className='content-layout'>
+        <div>
+          {
+            articles?.map(article => (
+              <>
+                <ListItem article={article} />
+                <Divider/>
+              </>
+            ))
+          }
+      </div>
+    </div>
   )
 }
   
