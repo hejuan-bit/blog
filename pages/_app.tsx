@@ -33,7 +33,6 @@ function MyApp({initialValue,Component, pageProps}: IProps) {
 
 MyApp.getInitialProps = async ({ctx}: {ctx: any}) => {
     const {userId, avatar, nickname} = ctx?.req?.cookies || {};
-    console.log({userId, avatar, nickname},'8888')
     return {
         initialValue: {
             user: {

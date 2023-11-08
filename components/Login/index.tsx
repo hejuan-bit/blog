@@ -54,7 +54,6 @@ const Login = (props: Iprops) => {
         }).then((res: any) => {
             if(res?.code === 0){
                 store.user.setUserInfo(res.data);
-                console.log(store,'store')
                 onClose();
                 message.success(res?.msg)
             } else{
