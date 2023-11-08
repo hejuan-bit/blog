@@ -2,13 +2,14 @@ import React, {useState}  from "react";
 import {prepareConnection} from '../../db/index';
 import { Article } from "../../db/entity/index";
 import style from './index.module.scss'
-import { Avatar, Input } from "antd";
+import { Avatar, Input, Button, message, Divider } from "antd";
 import {useStore} from '../../store/index';
 import {observer} from 'mobx-react-lite'
 import userStore from "@/store/userSrore";
 import Link from 'next/link'
 import Markdown  from "markdown-to-jsx";
 import {format} from 'date-fns'
+import request from '../../service/fetch'
 
 
 interface IArticle {
@@ -28,7 +29,7 @@ export async function getServerSideProps({params}){
         where: {
             id: articleId,
         },
-        relations: ['user']
+        relations: ['user', 'comments', 'comments.user']
     })
     if(article){
         article.views = Number(article.views) + 1;
@@ -44,10 +45,29 @@ export async function getServerSideProps({params}){
 const ArticleDetail = (props) => {
     const {articles} = props;
     console.log(articles,'0000000')
-    const {user: {nickname, avatar, id}} = articles;
+    const {user: {nickname, avatar, id}, comments} = articles;
     const store = useStore()
     const loginUserInfo = store?.user?.userInfo;
-    const [inputVal, setInputVal] = useState()
+    const [inputVal, setInputVal] = useState('')
+
+    const handleChange = (event) => {
+        setInputVal(event?.target?.value)
+    }
+
+    const handleComment = () => {
+        request.post(`/api/comment/publish`,{
+            articleId: articles?.id,
+            content: inputVal
+
+        }).then((res:any) => {
+            if(res?.code === 0 ){
+                message.success('发表成功')
+                setInputVal('');
+            }else{
+                message.error('发表失败')
+            }
+        })
+    }
 
     return (
         <div>
@@ -79,11 +99,32 @@ const ArticleDetail = (props) => {
                             <div className={style.enter}>
                                 <Avatar src={avatar} size={40} />
                                 <div className={style.content}>
-                                    <Input.TextArea placeholder="请输入评论" rows={4} value={inputVal}/>
+                                    <Input.TextArea placeholder="请输入评论" rows={4} value={inputVal} onChange={handleChange}/>
+                                    <Button type="primary" onClick={handleComment}>发表评论</Button>
                                 </div>
                             </div>
                         )
                     }
+                    <Divider />
+                    <div className={style.display}>{
+                        comments?.map((comment: any) =>{
+                            return (
+                                <div className={style.wrapper} key={comment?.id}>
+                                    <Avatar src={comment?.user?.avatar} size={40}/>
+                                    <div className={style.info}>
+                                        <div className={style.name}>
+                                            <div>{comment?.user?.nickname}</div>
+                                            <div className={style.date}>
+                                                {format(new Date(comment?.update_time), 'yyyy-MM-dd hh:mm:ss')}
+                                            </div>
+                                        </div>
+                                        <div className={style.content}>{comment?.content}</div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                    </div>
                 </div>
             </div>
         </div>
