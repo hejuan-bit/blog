@@ -1,8 +1,8 @@
-import React  from "react";
+import React, {useState}  from "react";
 import {prepareConnection} from '../../db/index';
 import { Article } from "../../db/entity/index";
 import style from './index.module.scss'
-import { Avatar } from "antd";
+import { Avatar, Input } from "antd";
 import {useStore} from '../../store/index';
 import {observer} from 'mobx-react-lite'
 import userStore from "@/store/userSrore";
@@ -23,12 +23,17 @@ export async function getServerSideProps({params}){
     const articleId = params?.id;
     console.log(articleId,'articleId')
     const db = await prepareConnection();
+    const articleRepo = db.getRepository(Article);
     const article = await db.getRepository(Article).findOne({
         where: {
             id: articleId,
         },
         relations: ['user']
     })
+    if(article){
+        article.views = Number(article.views) + 1;
+        await articleRepo.save(article)
+    }
     return {
         props: {
             articles: JSON.parse(JSON.stringify(article))
@@ -42,6 +47,8 @@ const ArticleDetail = (props) => {
     const {user: {nickname, avatar, id}} = articles;
     const store = useStore()
     const loginUserInfo = store?.user?.userInfo;
+    const [inputVal, setInputVal] = useState()
+
     return (
         <div>
             <div className="content-layout">
@@ -62,6 +69,22 @@ const ArticleDetail = (props) => {
                     </div>
                 </div>
                 <Markdown className={style.markdown}>{articles?.content}</Markdown>
+            </div>
+            <div className={style.divider}></div>
+            <div className="content-layout">
+                <div className={style.comment}>
+                    <h3>评论</h3>
+                    {
+                        loginUserInfo?.userId && (
+                            <div className={style.enter}>
+                                <Avatar src={avatar} size={40} />
+                                <div className={style.content}>
+                                    <Input.TextArea placeholder="请输入评论" rows={4} value={inputVal}/>
+                                </div>
+                            </div>
+                        )
+                    }
+                </div>
             </div>
         </div>
     )

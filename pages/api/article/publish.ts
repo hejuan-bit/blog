@@ -4,8 +4,6 @@ import {ironOption} from '../../../config/index';
 import {prepareConnection} from '../../../db/index'
 import {User, UserAuth,Article} from '../../../db/entity/index'
 import {ISession } from '../index'
-import {Cookie} from "next-cookie"
-import {setCookie} from '../../../utils/index'
 import {EXCEPTION_ARTICLE} from '../config/codes'
 
 export default withIronSessionApiRoute(publish,ironOption);
@@ -38,7 +36,7 @@ async function publish(req: NextApiRequest, res: NextApiResponse) {
     if(resArticle) {
         res.status(200).json({data: resArticle, code: 0, msg: '发布成功'})
     } else {
-        res.status(200).json({...EXCEPTION_ARTICLE})
+        res.status(200).json({...EXCEPTION_ARTICLE.PUBLISH_FAILED})
     }
 
 }
