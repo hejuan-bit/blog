@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection, getConnection, createConnection } from 'typeorm';
-import {User, UserAuth, Article, Comment} from './entity/index'
+import {User, UserAuth, Article, Comment,Tag} from './entity/index'
 
 let connectionReadyPromise: Promise<Connection> | null = null;
 
@@ -21,7 +21,7 @@ export const prepareConnection = () => {
                 username: process.env.DATABASE_USERNAME,
                 password: process.env.DATABASE_PASSWORD,
                 database: process.env.DATABASE_NAME,
-                entities: [User, UserAuth, Article, Comment],
+                entities: [User, UserAuth, Article, Comment,Tag],
                 synchronize: false,
                 logging: true
             })
